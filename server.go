@@ -9,6 +9,7 @@ import (
 func main() {
 	http.HandleFunc("/main-page", handleMainPage)
 	http.HandleFunc("/health", handleHealth)
+	http.HandleFunc("new-endpoint", handleNewEndpoint)
 
 	addr := "localhost:8080"
 	log.Printf("The server is running on the port %s...", addr)
@@ -34,6 +35,13 @@ func handleHealth(writer http.ResponseWriter, request *http.Request) {
 	returnResponse(writer, "All Good!")
 }
 
+func handleNewEndpoint(writer http.ResponseWriter, request *http.Request) {
+	if request.Method != "GET" {
+		http.Error(writer, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return
+	}
+	returnResponse(writer, "This is the new endpoint")
+}
 func returnResponse(w http.ResponseWriter, responseString string) {
 	response := []byte(responseString)
 	_, err := w.Write(response)
